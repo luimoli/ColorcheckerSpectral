@@ -9,19 +9,31 @@ class SpectralColor:
         self.cam1 = np.float32(np.loadtxt('./data/cam1_bgr.csv', delimiter=','))[:, 1:] # (31, 3)
         self.cam2 = np.float32(np.loadtxt('./data/cam2_bgr.csv', delimiter=','))[:, 1:]
         self.cam3 = np.float32(np.loadtxt('./data/cam3_bgr.csv', delimiter=','))[:, 1:]
-        self.cam_xyz = np.load('./data/cam_1931-2-xyz_400-700_1nm.npy') #r-g-b #(N, 3)
+        self.cam4 = np.float32(np.loadtxt('./data/cam4_bgr.csv', delimiter=','))[:, 1:]
 
+        self.cam_xyz = np.load('./data/cam_1931-2-xyz_400-700_1nm.npy') #r-g-b #(N, 3)
         self.cam_volume = cam_volume
 
         # self.sensor1 = np.float32(np.loadtxt('./data/sensor1_rgb.csv', delimiter=','))[::4, :]
 
-        self.spectral_A = self.normalize(np.float32(np.loadtxt('./data/spectral_A_300-830_1nm.csv', delimiter=','))[:, -1]) #(31)  # [::10, -1][10:41]
-        self.spectral_D65 = self.normalize(np.float32(np.loadtxt('./data/spectral_D65_300-830_1nm.csv', delimiter=','))[:, -1]) #(31)
-        self.light_volume = light_volume
-
         self.colorchecker_1nm = np.load('./data/ColorChecker_spectral_400-700_1nm.npy') #(24, 31)
         self.colorchecker_10nm = np.float32(np.loadtxt('./data/ColorChecker_spectral_400-700_10nm.csv', delimiter=',')) #(24, 31)
         self.checker_volume = checker_volume
+
+
+        self.light_name_list = ['A', 'B', 'D50', 'D55', 'D60', 'D65', 'D75']
+        self.spectral =self.__illuminant_init__()
+
+    def __illuminant_init__(self):
+        dic = {}
+        for name in self.light_name_list:
+            spectral = self.normalize(np.load(f'./data/spectral_{name}_400_700_1nm.npy'))
+            dic[name] = spectral
+
+        return dic
+    
+    def __businesssCamera_init__(self):
+        pass
 
     def normalize(self, arr):
         return (arr - arr.min()) / (arr.max() - arr.min())
@@ -53,6 +65,37 @@ class SpectralColor:
 
 if __name__ == '__main__':
     sc = SpectralColor()
+    # print(sc.spectral)
+
+    for i in sc.light_name_list:
+        sensor = sc.cam4
+        light = sc.spectral[i][::10]
+        checker = sc.colorchecker_10nm
+        sensor_xyz = sc.cam_xyz[::10][:, ::-1]
+
+        assert len(sensor) == len(light) and checker.shape[-1] == len(sensor)
+        # plt.figure()
+        # plt.plot(sensor[:, 0] * light)
+        # plt.plot(sensor[:, 1] * light)
+        # plt.plot(sensor[:, 2] * light)
+        # plt.plot()
+
+
+        # plt.figure()
+        # plt.plot(sensor_xyz[:, 0] * light)
+        # plt.plot(sensor_xyz[:, 1] * light)
+        # plt.plot(sensor_xyz[:, 2] * light)
+        # plt.plot()
+        # plt.show()
+
+        # continue
+
+        realcolor = sc.calccolor(sensor, light, checker)
+        print(realcolor.shape)
+        print(realcolor)
+        # np.save(r'D:\Code\CailibrationChecker\data\analog\analog_A.npy', realcolor)
+        np.save(f'./data_analog/analog_cam4_{i}.npy', realcolor)
+
 
     # sensor = sc.cam1
     # light = sc.spectral_A[::10][10:41]
@@ -60,7 +103,7 @@ if __name__ == '__main__':
 
     # # sensor = sc.cam_xyz
     # # light = sc.spectral_D65[100:401]
-    # # checker = sc.colorchecker
+    # # checker = sc.colorchecker_1nm
 
     # assert len(sensor) == len(light) and checker.shape[-1] == len(sensor)
     # realcolor = sc.calccolor(sensor, light, checker)
@@ -68,12 +111,3 @@ if __name__ == '__main__':
     # print(realcolor)
     # np.save(r'D:\Code\CailibrationChecker\data\analog\analog_A.npy', realcolor)
 
-
-    import smv_colour
-    import torch
-    # a = smv_colour.XYZ2RGB(torch.from_numpy(np.float32(np.array([1/3, 1/3, 1/3]))), "bt709")
-    a = smv_colour.Lab2XYZ(torch.from_numpy(np.float32(np.array([100, 0, 0]))))
-    print(a)
-
-
-    # print(sc.normalize(sc.spectral_D65))

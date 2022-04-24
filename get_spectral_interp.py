@@ -56,8 +56,35 @@ def spectral_inerp(spectral_arr, mode, start_stop, interval, interval_new):
 
 if __name__ == '__main__':
 
-    spectral_arr = np.float32(np.loadtxt('./data/sensor1_rgb.csv', delimiter=','))[:, 1:]
-    tst = spectral_inerp(spectral_arr, '2', (400, 700), 4, 1)
+    # spectral_arr = np.float32(np.loadtxt('./data/sensor1_rgb.csv', delimiter=','))
+    # tst = spectral_inerp(spectral_arr[:, 1:], '2', (400, 700), 4, 1)
+
+    # plt.figure()
+    # plt.plot(np.arange(400, 701, 1), tst[:, 0], 'r')
+    # plt.plot(np.arange(400, 701, 1), tst[:, 1], 'g')
+    # plt.plot(np.arange(400, 701, 1), tst[:, 2], 'b')
+    # # plt.xlim((400,700))
+    # plt.legend(['r','g','b'])
+    # plt.show()
+    # np.save('./cam/'spectral_arr)
+
+    for i in range(12):
+        spectral_arr = np.float32(np.loadtxt(f'./cam/camera_{i}.spectra'))
+        # print(type(spectral_arr), spectral_arr.shape)
+        # exit()
+        tst = spectral_inerp(spectral_arr[:, 1:], '2', (400, 700), 4, 1)
+
+        plt.figure()
+        plt.plot(np.arange(400, 701, 1), tst[:, 0], 'r')
+        plt.plot(np.arange(400, 701, 1), tst[:, 1], 'g')
+        plt.plot(np.arange(400, 701, 1), tst[:, 2], 'b')
+        # plt.xlim((400,700))
+        plt.legend(['r','g','b'])
+        plt.xlabel('wavelength(nm)')
+        plt.ylabel('spectral distribution')
+        plt.title(f'camera_{i}')
+        plt.show()
+        np.save(f'./cam_interp/camera_{i}_rgb_400_700_1nm.npy', tst)
 
 
 # colorchecker = np.float32(np.loadtxt('./data/ColorChecker_spectral_400-700_10nm.csv', delimiter=',')) #(24, 36)
