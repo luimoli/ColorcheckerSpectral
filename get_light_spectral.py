@@ -7,7 +7,8 @@ from colour import SDS_ILLUMINANTS
 
 
 def clip_light_spectral(spectral_name_list, wave_range):
-    """_summary_
+    """choose a list of standard illuminant, and get the 1-nm interval spectral data.
+        (dict['wavelength_num'])
 
     Args:
         spectral_name_list (str_list): CIE illuminant name list. eg.['A', 'B', 'D50', 'D55', 'D60', 'D65', 'D75']
@@ -38,12 +39,7 @@ if __name__ == '__main__':
     # print(light_spectral['700'])
     
 
-    # INTERVAL = 5  # Spectral bin size.
-    # SHAPE = colour.SpectralShape(400, 700, INTERVAL)
-    # CMFS_1_NAME = 'CIE 1931 2 Degree Standard Observer'
-    # CMFS_1 = colour.colorimetry.MSDS_CMFS[CMFS_1_NAME].align(SHAPE)
-    # colour.plotting.plot_multi_cmfs([CMFS_1])
-    # print(np.array(CMFS_1[:]))
+
 
 
     # res = colour.sd_to_XYZ(D65)

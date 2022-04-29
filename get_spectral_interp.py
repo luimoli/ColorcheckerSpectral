@@ -6,7 +6,7 @@ from scipy import constants as Const
 
 
 def spectral_inerp(spectral_arr, mode, start_stop, interval, interval_new):
-    """_summary_
+    """make the interpolation of spectral data.
 
     Args:
         spectral_arr (arr): _description_
