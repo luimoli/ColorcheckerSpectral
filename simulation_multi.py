@@ -29,6 +29,7 @@ for i in range(12):
         x = x.reshape(-1, 3)
         calibration_xyz = np.dot(cam1, x)
         loss = ((calibration_xyz - xyz) ** 2).sum() ** 0.5
+        # loss = abs(calibration_xyz - xyz).mean()
         return loss
 
 
@@ -46,17 +47,17 @@ for i in range(12):
     # print((xyz * light_D75[:, None]).sum(axis=0))
     # exit()
     
-    # plt.figure(figsize=(30,8))
-    # color_list=['r', 'g', 'b']
-    # xyz_list = ['X', 'Y', 'Z']
-    # for j in range(3):
-    #     plt.subplot(1, 3, j+1)
-    #     plt.plot(calibration_xyz[:, j])
-    #     plt.plot(xyz[:, j], c=color_list[j])
-    #     plt.legend([f'calibrated_{xyz_list[j]}', f'{xyz_list[j]}'])
-    #     plt.title(f'camera_{i}')
-    # plt.tight_layout()
-    # plt.show()
+    plt.figure(figsize=(30,8))
+    color_list=['r', 'g', 'b']
+    xyz_list = ['X', 'Y', 'Z']
+    for j in range(3):
+        plt.subplot(1, 3, j+1)
+        plt.plot(calibration_xyz[:, j])
+        plt.plot(xyz[:, j], c=color_list[j])
+        plt.legend([f'calibrated_{xyz_list[j]}', f'{xyz_list[j]}'])
+        plt.title(f'camera_{i}')
+    plt.tight_layout()
+    plt.show()
 
 
     # plt.figure()
@@ -88,8 +89,8 @@ for i in range(12):
 
 
     ###=========================================================
-    sc = SpectralColor()
-    print(sc.spectral)
+    # sc = SpectralColor()
+    # print(sc.spectral)
 
     # E_list = []
     # C_list = []
@@ -109,8 +110,6 @@ for i in range(12):
     #     calibrated_color = sc.color_integration(sensor_calibrated_xyz, light, checker, interval=1)
 
 
-        
-
     #     analog_gt = realcolor / 100.
     #     ideal_xyz = smv_colour.RGB2XYZ(analog_gt, 'bt709')
     #     ideal_lab = smv_colour.XYZ2Lab(ideal_xyz)
@@ -122,10 +121,10 @@ for i in range(12):
     #     res_deltaE = delta_E_CIE2000(ideal_lab, ideal_lab_tst)
     #     res_deltaC = delta_C_CIE2000(ideal_lab, ideal_lab_tst)
 
-        # print(res_deltaE)
-        # print(res_deltaC)
-        # E_list.append(res_deltaE.max())
-        # C_list.append(res_deltaC.max())
+    #     print(res_deltaE)
+    #     print(res_deltaC)
+    #     E_list.append(res_deltaE.max())
+    #     C_list.append(res_deltaC.max())
     
     # plt.plot(sc.light_name_list, E_list)
     # plt.plot(sc.light_name_list, C_list)
